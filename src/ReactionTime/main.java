@@ -3,7 +3,7 @@ package ReactionTime;
 public class main {
 
 	public static void main(String[] args) {
-		TimesRecorder tr = new TimesRecorder();
+		ReactionTimeRecords tr = new ReactionTimeRecords();
 		ReactionTimeRecorder r = new ReactionTimeRecorder();
 		
 		System.out.println("/// Controler Class prints all records using TimesRecorded class");

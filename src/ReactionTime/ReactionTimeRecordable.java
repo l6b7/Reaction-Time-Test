@@ -1,6 +1,6 @@
 package ReactionTime;
 
-public interface TimesRecordable  {
+public interface ReactionTimeRecordable  {
 	
 	
 	

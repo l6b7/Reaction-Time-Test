@@ -11,13 +11,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 
-public class TimesRecorder implements TimesRecordable {
+public class ReactionTimeRecords implements ReactionTimeRecordable {
 
 	private int recordsMaxSize = 20;
 	private LinkedList<Integer> records;
 	private String filepath = "test.txt";
 
-	TimesRecorder() {
+	ReactionTimeRecords() {
 		records = readRecordsFromAFile();
 	}
 
