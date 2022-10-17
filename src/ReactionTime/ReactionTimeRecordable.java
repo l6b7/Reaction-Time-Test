@@ -1,18 +1,13 @@
 package ReactionTime;
 
-public interface ReactionTimeRecordable  {
+public interface ReactionTimeRecordable {
 	
+	public void getRandomDelay();
 	
+	public void getRandomDelay(int minimumDelay);
 	
+	public long getTimestamp();
 	
-	public void addRecord(int ReactionTimeMS);
-	
-	public void removeAllRecords();
-	
-	public void getAllRecords();
-	
-	public int getCurrentRecord();
-	
-	public int getAverageInRange(int Range);
+	public int getReactionTime(long startPoint, long endPoint);
 	
 }
