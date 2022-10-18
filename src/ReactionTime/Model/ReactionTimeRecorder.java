@@ -1,12 +1,10 @@
-package ReactionTime;
+package ReactionTime.Model;
 
 import java.util.Scanner;
 
 public class ReactionTimeRecorder implements ReactionTimeRecordable {
 		
-	public static void main(String[] args) {
-		ReactionTimeRecorder r = new ReactionTimeRecorder();
-	}
+
 
 	public int testReactionTime() {
 		Scanner consoleInput = new Scanner(System.in);

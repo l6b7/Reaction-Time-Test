@@ -1,4 +1,4 @@
-package ReactionTime;
+package ReactionTime.Model;
 
 public interface StoredTimeRecordable  {
 	

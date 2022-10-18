@@ -1,4 +1,4 @@
-package ReactionTime;
+package ReactionTime.Model;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,7 +17,7 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 	private LinkedList<Integer> records;
 	private String filepath = "test.txt";
 
-	StoredTimeRecords() {
+	public StoredTimeRecords() {
 		records = readRecordsFromAFile();
 	}
 
