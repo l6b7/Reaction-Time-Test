@@ -5,14 +5,24 @@ import ReactionTime.Model.ReactionTimeRecordable;
 import ReactionTime.Model.ReactionTimeRecorder;
 import ReactionTime.Model.StoredTimeRecordable;
 import ReactionTime.Model.StoredTimeRecords;
+import ReactionTime.View.ApplicationView;
 
 public class ReactionTimeApplication implements Controller {
 	
 	private StoredTimeRecordable tr = new StoredTimeRecords();
 	private ReactionTimeRecordable r = new ReactionTimeRecorder();
 	
+	private ApplicationView view;
+	
+	
+	
+	public ReactionTimeApplication() {
+		view = new ApplicationView(this);
+	}
+	
+	
 	public static void main(String[] args) {
-		
+		new ReactionTimeApplication();
 
 	}
 
@@ -33,6 +43,8 @@ public class ReactionTimeApplication implements Controller {
 		
 	}
 
+	//boolean faulstart()
+	
 	@Override
 	public void addRecord(int reactionTimeMS) {
 		tr.addRecord(reactionTimeMS);
