@@ -11,6 +11,8 @@ public interface StoredTimeRecordable  {
 	
 	public void getAllRecords();
 	
+	public void removeLastRecord();
+	
 	public int getCurrentRecord();
 	
 	public int getAverageInRange(int Range);

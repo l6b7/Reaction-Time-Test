@@ -47,6 +47,14 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 		saveRecordsToAFile(records);
 		
 	}
+	
+	@Override
+	public void removeLastRecord() {
+		if(!records.isEmpty()) {
+			records.removeFirst();
+			saveRecordsToAFile(records);
+		}
+	}
 
 	@Override
 	public int getCurrentRecord() {

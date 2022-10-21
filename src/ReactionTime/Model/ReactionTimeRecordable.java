@@ -2,9 +2,9 @@ package ReactionTime.Model;
 
 public interface ReactionTimeRecordable {
 	
-	public void getRandomDelay();
+
 	
-	public void getRandomDelay(int minimumDelay);
+	public int getRandomDelay();
 	
 	public long getTimestamp();
 	

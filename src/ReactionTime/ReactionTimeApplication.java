@@ -9,7 +9,7 @@ import ReactionTime.View.ApplicationView;
 
 public class ReactionTimeApplication implements Controller {
 	
-	private StoredTimeRecordable tr = new StoredTimeRecords();
+	private StoredTimeRecordable storedTimeRecords = new StoredTimeRecords();
 	private ReactionTimeRecordable r = new ReactionTimeRecorder();
 	
 	private ApplicationView view;
@@ -17,7 +17,7 @@ public class ReactionTimeApplication implements Controller {
 	
 	
 	public ReactionTimeApplication() {
-		view = new ApplicationView(this);
+		//view = new ApplicationView(this);
 	}
 	
 	
@@ -28,10 +28,10 @@ public class ReactionTimeApplication implements Controller {
 
 	@Override
 	public int[] updateResults() {
-		int current = tr.getCurrentRecord();
-		int avgOf3  = tr.getAverageInRange(3);
-		int avgOf5  = tr.getAverageInRange(5);
-		int avgOf10 = tr.getAverageInRange(10);
+		int current = storedTimeRecords.getCurrentRecord();
+		int avgOf3  = storedTimeRecords.getAverageInRange(3);
+		int avgOf5  = storedTimeRecords.getAverageInRange(5);
+		int avgOf10 = storedTimeRecords.getAverageInRange(10);
 		
 		return new int[] {current,avgOf3,avgOf5,avgOf10};
 		
@@ -39,22 +39,41 @@ public class ReactionTimeApplication implements Controller {
 
 	@Override
 	public void clearResults() {
-		tr.removeAllRecords();
+		storedTimeRecords.removeAllRecords();
 		
 	}
 
-	//boolean faulstart()
+	@Override
+	public void clearLastResult() {
+		storedTimeRecords.removeLastRecord();
+	}
 	
+
 	@Override
 	public void addRecord(int reactionTimeMS) {
-		tr.addRecord(reactionTimeMS);
+		storedTimeRecords.addRecord(reactionTimeMS);
 		
 	}
 
 	@Override
-	public void getReactionTime(long startPoint, long endPoint) {
-		r.getReactionTime(startPoint, endPoint);
+	public int getReactionTime(long startPoint, long endPoint) {
+		return r.getReactionTime(startPoint, endPoint);
+	}
+
+	@Override
+	public int getRandomDelay() {
+		return 500 + r.getRandomDelay() * 3;
 		
 	}
+	
+	
+	@Override
+	public void getDelay() {
+		
+	}
+
+
+
+
 
 }

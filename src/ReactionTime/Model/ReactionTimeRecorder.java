@@ -45,23 +45,11 @@ public class ReactionTimeRecorder implements ReactionTimeRecordable {
 	}
 
 	
-	@Override // more random but a possibility of not noticeable delay
-	public void getRandomDelay() {
-		try {
-			Thread.sleep(100 + (int)((Math.random() * 1000) * 2 ));
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
-		}
-		
-	}
+
 	
 	@Override
-	public void getRandomDelay(int minimumDelay) {
-		try {
-			Thread.sleep(minimumDelay + (int)(Math.random() * 1000));
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
-		}
+	public int getRandomDelay() {
+		return (int)(Math.random() * 1000);
 		
 	}
 
