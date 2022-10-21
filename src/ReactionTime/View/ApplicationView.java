@@ -204,7 +204,8 @@ public class ApplicationView {
 							InitializeReactionSpeedTimer();
 							reactionTimeTimer.start();
 						}
-						
+
+	
 					}
 			
 					timeElapsedInMS = 0;
