@@ -13,9 +13,10 @@ import java.util.LinkedList;
 
 public class StoredTimeRecords implements StoredTimeRecordable {
 
-	private int recordsMaxSize = 20;
+	private final int RECORDS_MAX_SIZE = 20;
+	private final String FILEPATH = "records.txt";
+
 	private LinkedList<Integer> records;
-	private String filepath = "test.txt";
 
 	public StoredTimeRecords() {
 		records = readRecordsFromAFile();
@@ -24,7 +25,7 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 	@Override
 	public void addRecord(int ReactionTimeMS) {
 
-		if (records.size() > recordsMaxSize) {
+		if (records.size() > RECORDS_MAX_SIZE) {
 			records.removeLast();
 			records.addFirst(ReactionTimeMS);
 		} else {
@@ -32,7 +33,6 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 		}
 
 		saveRecordsToAFile(records);
-		
 	}
 
 	@Override
@@ -45,12 +45,12 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 	public void removeAllRecords() {
 		records = new LinkedList<Integer>();
 		saveRecordsToAFile(records);
-		
+
 	}
-	
+
 	@Override
 	public void removeLastRecord() {
-		if(!records.isEmpty()) {
+		if (!records.isEmpty()) {
 			records.removeFirst();
 			saveRecordsToAFile(records);
 		}
@@ -59,9 +59,9 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 	@Override
 	public int getCurrentRecord() {
 		return records.get(0);
-		
+
 	}
-	
+
 	@Override
 	public int getAverageInRange(int range) {
 		int averageInRange = 0;
@@ -81,9 +81,9 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 		}
 	}
 
-	
 	private void saveRecordsToAFile(LinkedList<Integer> records) {
-		try (FileWriter fileWriter = new FileWriter(filepath); BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+		try (FileWriter fileWriter = new FileWriter(FILEPATH);
+				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
 			boolean FirstElement = true;
 			for (Integer record : records) {
 				if (FirstElement) {
@@ -103,16 +103,17 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 
 	private LinkedList<Integer> readRecordsFromAFile() {
 
-		Path path = Paths.get(filepath);
+		Path path = Paths.get(FILEPATH);
 		if (Files.exists(path)) {
 
-			try (FileReader fileReader = new FileReader(filepath); BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+			try (FileReader fileReader = new FileReader(FILEPATH);
+					BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 
 				LinkedList<Integer> records = new LinkedList<Integer>();
 
 				String textLine;
 				while ((textLine = bufferedReader.readLine()) != null) {
-					if (records.size() > recordsMaxSize) {
+					if (records.size() > RECORDS_MAX_SIZE) {
 						return new LinkedList<Integer>();
 					}
 					records.addLast(Integer.parseInt(textLine));
@@ -125,9 +126,8 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 				e.printStackTrace();
 			}
 		}
-			return new LinkedList<Integer>();
+		return new LinkedList<Integer>();
 
-		
 	}
 
 }

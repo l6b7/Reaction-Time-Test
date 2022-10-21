@@ -12,12 +12,8 @@ public class ReactionTimeApplication implements Controller {
 	private StoredTimeRecordable storedTimeRecords = new StoredTimeRecords();
 	private ReactionTimeRecordable r = new ReactionTimeRecorder();
 	
-	private ApplicationView view;
-	
-	
-	
 	public ReactionTimeApplication() {
-		//view = new ApplicationView(this);
+		new ApplicationView(this);
 	}
 	
 	
@@ -62,18 +58,7 @@ public class ReactionTimeApplication implements Controller {
 
 	@Override
 	public int getRandomDelay() {
-		return 500 + r.getRandomDelay() * 3;
+		return r.getRandomNumber();
 		
 	}
-	
-	
-	@Override
-	public void getDelay() {
-		
-	}
-
-
-
-
-
 }

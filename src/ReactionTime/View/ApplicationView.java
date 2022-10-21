@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
@@ -20,43 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 
-import ReactionTime.ReactionTimeApplication;
-import ReactionTime.Controller.Controller;//remove later
+import ReactionTime.Controller.Controller;
 
 public class ApplicationView {
-
-	private JFrame frame;
-
-	private CardLayout cardLayout;
-	private JPanel pageController;
-
-	private CardLayout appMidPanelCardLayout;
-	private JPanel appMidPanelpageController;
-
-	private JPanel appPanel;
-	private JPanel topAppPanel;
-	private JPanel midAppPanel;
-	private JPanel botAppPanel;
-
-	private JPanel recordsPanel;
-	private JPanel topRecordsPanel;
-	private JPanel midRecordsPanel;
-	private JPanel botRecordsPanel;
-
-	private JPanel startPanel;
-	private JPanel getReadyPanel;
-	private JPanel falseStartPanel;
-	private JPanel clickPanel;
-
-	private JButton goToRecordsButton;
-	private JButton goToAppButton;
-	private JButton RemoveLastRecordButton;
-	private JButton RemoveAllRecordsButton;
-
-	private JLabel startLabel;
-	private JLabel getReadyLabel;
-	private JLabel falseStartLabel;
-	private JLabel clickNowLabel;
 
 	private final String WINDOW_NAME = "Reaction Time Test";
 	private final Dimension WINDOW_SIZE = new Dimension(800, 600);
@@ -103,25 +68,57 @@ public class ApplicationView {
 	private int timeElapsedInMS = 0;
 	private Timer randomDelayTimer;
 	private Timer reactionTimeTimer;
+	
+	private JFrame frame;
 
-	public static void main(String[] args) {
-		ReactionTimeApplication ata = new ReactionTimeApplication();
-		ApplicationView a = new ApplicationView(ata);
-	}
+	private CardLayout cardLayout;
+	private JPanel pageController;
+
+	private CardLayout appMidPanelCardLayout;
+	private JPanel appMidPanelpageController;
+
+	private JPanel appPanel;
+	private JPanel topAppPanel;
+	private JPanel midAppPanel;
+	private JPanel botAppPanel;
+
+	private JPanel recordsPanel;
+	private JPanel topRecordsPanel;
+	private JPanel midRecordsPanel;
+	private JPanel botRecordsPanel;
+
+	private JPanel startPanel;
+	private JPanel getReadyPanel;
+	private JPanel falseStartPanel;
+	private JPanel clickPanel;
+
+	private JButton goToRecordsButton;
+	private JButton goToAppButton;
+	private JButton RemoveLastRecordButton;
+	private JButton RemoveAllRecordsButton;
+
+	private JLabel startLabel;
+	private JLabel getReadyLabel;
+	private JLabel falseStartLabel;
+	private JLabel clickNowLabel;
 
 	public ApplicationView(Controller controller) {
 
 		this.controller = controller;
+		
 		frame = createFrame(WINDOW_NAME, WINDOW_SIZE);
 
 		initializePanels();
 		initializeButtons();
-		initializeTimer();
+		
+		initializeTimers();
 		setKeyListeners();
 		setMouseActionListeners();
 		setButtonActionListeners();
+		
 		setUpMidPanelCards();
 		setUpFrameCards();
+		
 		setAppMidPanels();
 		setAppPanelComponents();
 		setRecordsPanelComponents();
@@ -163,7 +160,7 @@ public class ApplicationView {
 
 	private void initializeButtons() {
 
-		goToAppButton = createButton(BUTTON_NAME_GO_TO_APP, BUTTON_SIZE, BUTTON_TEXT_SIZE);
+		goToAppButton 	=	createButton(BUTTON_NAME_GO_TO_APP, BUTTON_SIZE, BUTTON_TEXT_SIZE);
 		goToRecordsButton = createButton(BUTTON_NAME_GO_TO_RECORDS, BUTTON_SIZE, BUTTON_TEXT_SIZE);
 		RemoveLastRecordButton = createButton(BUTTON_NAME_REMOVE_LAST, BUTTON_SIZE_WIDE, BUTTON_TEXT_SIZE);
 		RemoveAllRecordsButton = createButton(BUTTON_NAME_REMOVE_ALL, BUTTON_SIZE_WIDE, BUTTON_TEXT_SIZE);
@@ -174,8 +171,10 @@ public class ApplicationView {
 		JButton button = new JButton(name);
 		button.setPreferredSize(size);
 		button.setBorder(new BevelBorder(0));
+		
 		button.setBorderPainted(true);
 		button.setFocusable(false);
+		
 		button.setBackground(COLOR_BUTTON);
 
 		button.setForeground(COLOR_BUTTON_TEXT);
@@ -184,7 +183,7 @@ public class ApplicationView {
 		return button;
 	}
 
-	private void initializeTimer() {
+	private void initializeTimers() {
 		randomDelayTimer = new Timer(100, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -216,23 +215,27 @@ public class ApplicationView {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+					
 					if (startPanel.isShowing()) {
 						randomDelayInMS = controller.getRandomDelay();
 						randomDelayTimer.start();
 						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
 					}
+					
 					else if(getReadyPanel.isShowing()) {
 						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_FALSE_START_PANEL);
 						timeElapsedInMS = 0;
 						randomDelayTimer.stop();
 						
 					}
+					
 					else if(falseStartPanel.isShowing()) {
 						randomDelayInMS = controller.getRandomDelay();
 						randomDelayTimer.start();
 						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
 						
 					}
+					
 					else if (clickPanel.isShowing()) {
 						reactionTimeTimer.stop();
 						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
@@ -320,10 +323,12 @@ public class ApplicationView {
 		appMidPanelpageController.setLayout(appMidPanelCardLayout);
 		midAppPanel.setLayout(new BorderLayout());
 		midAppPanel.add(appMidPanelpageController);
+		
 		appMidPanelpageController.add(startPanel, CARD_NAME_START_PANEL);
 		appMidPanelpageController.add(getReadyPanel, CARD_NAME_GET_READY_PANEL);
 		appMidPanelpageController.add(falseStartPanel, CARD_NAME_FALSE_START_PANEL);
 		appMidPanelpageController.add(clickPanel, CARD_NAME_CLICK_PANEL);
+		
 		appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
 	}
 
@@ -331,10 +336,13 @@ public class ApplicationView {
 
 		cardLayout = new CardLayout();
 		pageController.setLayout(cardLayout);
+		frame.add(pageController);
+		
 		pageController.add(appPanel, CARD_NAME_APP_PANEL);
 		pageController.add(recordsPanel, CARD_NAME_RECORDS_PANEL);
+		
 		cardLayout.show(pageController, CARD_NAME_APP_PANEL);
-		frame.add(pageController);
+		
 	}
 
 	private void setAppMidPanels() {
