@@ -1,12 +1,14 @@
 package ReactionTime.Model;
 
+import java.util.LinkedList;
+
 public interface StoredTimeRecordable  {
 	
 	public void addRecord(int ReactionTimeMS);
 	
 	public void removeAllRecords();
 	
-	public void getAllRecords();
+	public LinkedList<Integer> getAllRecords();
 	
 	public void removeLastRecord();
 	

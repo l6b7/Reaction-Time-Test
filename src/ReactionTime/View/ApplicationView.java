@@ -6,18 +6,25 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableModel;
 
 import ReactionTime.Controller.Controller;
 
@@ -101,6 +108,17 @@ public class ApplicationView {
 	private JLabel getReadyLabel;
 	private JLabel falseStartLabel;
 	private JLabel clickNowLabel;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	public ApplicationView(Controller controller) {
 
@@ -409,6 +427,92 @@ public class ApplicationView {
 		topRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
 		botRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
 
+		/////////////////////////// new
+		
+		JTable tableL5 = new JTable(0,0);		
+		tableL5.setForeground(Color.CYAN);
+		tableL5.setBackground(Color.GRAY);
+		
+		DefaultTableModel model = (DefaultTableModel) tableL5.getModel();
+		model.addColumn("History",controller.getAllRecords().toArray());
+		tableL5.setModel(model);
+		
+		midRecordsPanel.setLayout(new BorderLayout());
+		
+		
+		JPanel lleft = new JPanel();
+		JPanel lright = new JPanel();
+		JPanel lmid = new JPanel();
+		
+		JPanel mmTop = new JPanel();
+		JPanel mmBot = new JPanel();
+
+		
+		mmTop.setLayout(new GridLayout(0,4,75,5));
+		mmTop.setBackground(Color.GREEN);
+		
+		mmBot.setLayout(new BorderLayout());
+		mmBot.setBackground(Color.MAGENTA);
+		
+		
+		lmid.setLayout(new BorderLayout());
+		
+		JPanel lmidleft = new JPanel();
+		JPanel lmidright = new JPanel();
+		
+		lleft.setBackground(Color.BLACK);
+		lright.setBackground(Color.BLACK);
+		lleft.setPreferredSize(new Dimension(40,0));
+		lright.setPreferredSize(new Dimension(40,0));
+		
+		
+		lmidleft.setBackground(Color.BLUE);
+		lmidright.setBackground(Color.RED);
+		lmidleft.setPreferredSize(new Dimension(200,0));
+		
+		JLabel label1 = new JLabel("current");
+		JLabel label2 = new JLabel("avg 3");
+		JLabel label3 = new JLabel("avg 5");
+		JLabel label4 = new JLabel("avg 10");
+		
+		JLabel label5 = new JLabel("100");
+		JLabel label6 = new JLabel("300");
+		JLabel label7 = new JLabel("500");
+		JLabel label8 = new JLabel("1000");
+		
+		
+		mmTop.add(label1);
+		mmTop.add(label2);
+		mmTop.add(label3);
+		mmTop.add(label4);
+		
+		mmTop.add(label5);
+		mmTop.add(label6);
+		mmTop.add(label7);
+		mmTop.add(label8);
+		
+		lmidright.setLayout(new BorderLayout());
+		
+		
+		 mmBot.add(new JLabel(new ImageIcon("Graph.PNG")),BorderLayout.CENTER);
+		
+		 
+		 lmidleft.add(tableL5);		 
+		lmidright.add(mmTop,BorderLayout.NORTH);
+		lmidright.add(mmBot);
+		
+		lmid.add(lmidleft, BorderLayout.WEST);
+		lmid.add(lmidright);
+		
+		
+		midRecordsPanel.add(lleft, BorderLayout.WEST);
+		midRecordsPanel.add(lright, BorderLayout.EAST);
+		midRecordsPanel.add(lmid);
+
+		/////////////////////////////////
+		
+		
+		
 		topRecordsPanel.add(goToAppButton);
 		botRecordsPanel.add(RemoveLastRecordButton);
 		botRecordsPanel.add(RemoveAllRecordsButton);

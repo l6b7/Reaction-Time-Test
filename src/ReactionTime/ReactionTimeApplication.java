@@ -1,6 +1,7 @@
 package ReactionTime;
 
 import ReactionTime.Controller.Controller;
+import java.util.LinkedList;
 import ReactionTime.Model.ReactionTimeRecordable;
 import ReactionTime.Model.ReactionTimeRecorder;
 import ReactionTime.Model.StoredTimeRecordable;
@@ -22,6 +23,8 @@ public class ReactionTimeApplication implements Controller {
 
 	}
 
+	
+	
 	@Override
 	public int[] updateResults() {
 		int current = storedTimeRecords.getCurrentRecord();
@@ -60,5 +63,11 @@ public class ReactionTimeApplication implements Controller {
 	public int getRandomDelay() {
 		return r.getRandomNumber();
 		
+	}
+
+
+	@Override
+	public LinkedList<Integer> getAllRecords() {
+		return storedTimeRecords.getAllRecords();
 	}
 }

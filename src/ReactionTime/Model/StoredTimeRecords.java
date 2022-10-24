@@ -36,9 +36,8 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 	}
 
 	@Override
-	public void getAllRecords() {
-		System.out.println("idk what to retun yet so I print record list");
-		System.out.println(records);
+	public LinkedList<Integer> getAllRecords() {
+		return records;
 	}
 
 	@Override

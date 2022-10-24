@@ -1,6 +1,10 @@
 package ReactionTime.Controller;
 
+import java.util.LinkedList;
+
 public interface Controller {
+	
+	public LinkedList<Integer> getAllRecords();
 	
 	public int[] updateResults();
 
