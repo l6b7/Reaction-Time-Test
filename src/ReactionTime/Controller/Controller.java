@@ -6,15 +6,18 @@ public interface Controller {
 	
 	public LinkedList<Integer> getAllRecords();
 	
-	public int[] updateResults();
+	public String getLastRecord();
+	
+	public String getAverageOfRecordsInRange(int range);
+	
+	public void addRecord(int reactionTimeMS);
 
 	public void clearLastResult();
 
 	public void clearResults();
 
 	public int getRandomDelay();
+	
+	public int getRecordsMaxSize();
 
-	public void addRecord(int reactionTimeMS);
-
-	public int getReactionTime(long startPoint, long endPoint);
 }

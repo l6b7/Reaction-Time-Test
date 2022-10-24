@@ -9,37 +9,64 @@ import ReactionTime.Model.StoredTimeRecords;
 import ReactionTime.View.ApplicationView;
 
 public class ReactionTimeApplication implements Controller {
-	
+
 	private StoredTimeRecordable storedTimeRecords = new StoredTimeRecords();
 	private ReactionTimeRecordable r = new ReactionTimeRecorder();
+	private final String EMPTY_LAST_RECORD = "--";
+	private final String EMPTY_AVERAGE_OF= "--";
 	
 	public ReactionTimeApplication() {
 		new ApplicationView(this);
 	}
-	
-	
+
 	public static void main(String[] args) {
 		new ReactionTimeApplication();
 
 	}
 
-	
-	
 	@Override
-	public int[] updateResults() {
-		int current = storedTimeRecords.getCurrentRecord();
-		int avgOf3  = storedTimeRecords.getAverageInRange(3);
-		int avgOf5  = storedTimeRecords.getAverageInRange(5);
-		int avgOf10 = storedTimeRecords.getAverageInRange(10);
+	public LinkedList<Integer> getAllRecords() {
 		
-		return new int[] {current,avgOf3,avgOf5,avgOf10};
+		return storedTimeRecords.getAllRecords();
+	}
+
+	@Override
+	public String getLastRecord() {
+		if(storedTimeRecords.getCurrentRecord() == -1) {
+			return EMPTY_LAST_RECORD;
+		}
+		else {
+			return Integer.toString(storedTimeRecords.getCurrentRecord());
+		}
 		
+	}
+
+	@Override
+	public String getAverageOfRecordsInRange(int range) {
+		if(storedTimeRecords.getAverageInRange(range) == -1) {
+			return EMPTY_AVERAGE_OF;
+		}
+		else {
+			return Integer.toString(storedTimeRecords.getAverageInRange(range));
+		}
+	}
+
+	@Override
+	public void addRecord(int reactionTimeMS) {
+		storedTimeRecords.addRecord(reactionTimeMS);
+
+	}
+
+	@Override
+	public int getRandomDelay() {
+		return r.getRandomNumber();
+
 	}
 
 	@Override
 	public void clearResults() {
 		storedTimeRecords.removeAllRecords();
-		
+
 	}
 
 	@Override
@@ -47,27 +74,9 @@ public class ReactionTimeApplication implements Controller {
 		storedTimeRecords.removeLastRecord();
 	}
 	
-
 	@Override
-	public void addRecord(int reactionTimeMS) {
-		storedTimeRecords.addRecord(reactionTimeMS);
-		
+	public int getRecordsMaxSize(){
+		return storedTimeRecords.getRecordsMaxSize();
 	}
 
-	@Override
-	public int getReactionTime(long startPoint, long endPoint) {
-		return r.getReactionTime(startPoint, endPoint);
-	}
-
-	@Override
-	public int getRandomDelay() {
-		return r.getRandomNumber();
-		
-	}
-
-
-	@Override
-	public LinkedList<Integer> getAllRecords() {
-		return storedTimeRecords.getAllRecords();
-	}
 }

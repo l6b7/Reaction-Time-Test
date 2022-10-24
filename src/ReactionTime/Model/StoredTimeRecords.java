@@ -57,27 +57,58 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 
 	@Override
 	public int getCurrentRecord() {
-		return records.get(0);
-
+		if(records.isEmpty()) {
+			return -1;
+		}
+		else {
+			return records.get(0);
+		}
 	}
+
 
 	@Override
 	public int getAverageInRange(int range) {
 		int averageInRange = 0;
 
 		if (records.isEmpty()) {
-			return averageInRange;
-		} else if (records.size() < range) {
+			return -1;
+		}
+		else if(records.size() < range) {
+			return -1;
+		}
+		else if(records.size() >= range) {
+			for (int i = 0; i < range; i++) {
+				averageInRange += records.get(i);
+			}
+			return averageInRange / range;
+		}
+		else {
+			return -1;
+		}
+	}
+	
+	@Override
+	// will return lesser possible average if not enough records found (records.size > 0)
+	public int getAproximateAverageInRange(int range) {
+
+		int averageInRange = 0;
+
+		if (records.isEmpty()) {
+			return -1;
+		} 
+		else if(records.size() >= range) {
+			for (int i = 0; i < range; i++) {
+				averageInRange += records.get(i);
+			}
+			return averageInRange / range;
+		}
+		else {
 			for (int i = 0; i < records.size(); i++) {
 				averageInRange += records.get(i);
 			}
 			return averageInRange / records.size();
-		} else {
-			for (int i = 0; i < range; i++) {
-				averageInRange += records.get(i);
-			}
-			return averageInRange / records.size();
 		}
+
 	}
 
 	private void saveRecordsToAFile(LinkedList<Integer> records) {
@@ -127,6 +158,10 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 		}
 		return new LinkedList<Integer>();
 
+	}
+
+	public int getRecordsMaxSize() {
+		return RECORDS_MAX_SIZE;
 	}
 
 }

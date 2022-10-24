@@ -13,9 +13,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
-import java.util.Vector;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -75,7 +72,7 @@ public class ApplicationView {
 	private int timeElapsedInMS = 0;
 	private Timer randomDelayTimer;
 	private Timer reactionTimeTimer;
-	
+
 	private JFrame frame;
 
 	private CardLayout cardLayout;
@@ -108,42 +105,41 @@ public class ApplicationView {
 	private JLabel getReadyLabel;
 	private JLabel falseStartLabel;
 	private JLabel clickNowLabel;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	JLabel lastRecord;
+	JLabel averageOf3Records;
+	JLabel averageOf5Records;
+	JLabel averageOf10Records;
+
+	DefaultTableModel model;
+	JTable recordsTable;
+
+	int a = 0;
 
 	public ApplicationView(Controller controller) {
 
 		this.controller = controller;
-		
+
 		frame = createFrame(WINDOW_NAME, WINDOW_SIZE);
 
 		initializePanels();
 		initializeButtons();
-		
+
 		initializeTimers();
 		setKeyListeners();
 		setMouseActionListeners();
 		setButtonActionListeners();
-		
+
 		setUpMidPanelCards();
 		setUpFrameCards();
-		
+
 		setAppMidPanels();
 		setAppPanelComponents();
+		setRecordsScreenAndItsComponents();
 		setRecordsPanelComponents();
 
 		frame.setVisible(true);
 	}
-
 
 	private JFrame createFrame(String name, Dimension WINDOW_SIZE) {
 
@@ -178,7 +174,7 @@ public class ApplicationView {
 
 	private void initializeButtons() {
 
-		goToAppButton 	=	createButton(BUTTON_NAME_GO_TO_APP, BUTTON_SIZE, BUTTON_TEXT_SIZE);
+		goToAppButton = createButton(BUTTON_NAME_GO_TO_APP, BUTTON_SIZE, BUTTON_TEXT_SIZE);
 		goToRecordsButton = createButton(BUTTON_NAME_GO_TO_RECORDS, BUTTON_SIZE, BUTTON_TEXT_SIZE);
 		RemoveLastRecordButton = createButton(BUTTON_NAME_REMOVE_LAST, BUTTON_SIZE_WIDE, BUTTON_TEXT_SIZE);
 		RemoveAllRecordsButton = createButton(BUTTON_NAME_REMOVE_ALL, BUTTON_SIZE_WIDE, BUTTON_TEXT_SIZE);
@@ -189,10 +185,10 @@ public class ApplicationView {
 		JButton button = new JButton(name);
 		button.setPreferredSize(size);
 		button.setBorder(new BevelBorder(0));
-		
+
 		button.setBorderPainted(true);
 		button.setFocusable(false);
-		
+
 		button.setBackground(COLOR_BUTTON);
 
 		button.setForeground(COLOR_BUTTON_TEXT);
@@ -207,11 +203,11 @@ public class ApplicationView {
 			public void actionPerformed(ActionEvent e) {
 				timeElapsedInMS = timeElapsedInMS + 100;
 				if (timeElapsedInMS > randomDelayInMS) {
-						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_CLICK_PANEL);
-						InitializeReactionSpeedTimer();
-						reactionTimeTimer.start();
-						randomDelayTimer.stop();
-						timeElapsedInMS = 0;
+					appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_CLICK_PANEL);
+					InitializeReactionSpeedTimer();
+					reactionTimeTimer.start();
+					randomDelayTimer.stop();
+					timeElapsedInMS = 0;
 				}
 			}
 		});
@@ -233,36 +229,54 @@ public class ApplicationView {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-					
+
 					if (startPanel.isShowing()) {
 						randomDelayInMS = controller.getRandomDelay();
 						randomDelayTimer.start();
 						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
 					}
-					
-					else if(getReadyPanel.isShowing()) {
+
+					else if (getReadyPanel.isShowing()) {
 						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_FALSE_START_PANEL);
 						timeElapsedInMS = 0;
 						randomDelayTimer.stop();
 						
+
 					}
-					
-					else if(falseStartPanel.isShowing()) {
+
+					else if (falseStartPanel.isShowing()) {
 						randomDelayInMS = controller.getRandomDelay();
 						randomDelayTimer.start();
 						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
-						
+
 					}
-					
+
 					else if (clickPanel.isShowing()) {
 						reactionTimeTimer.stop();
-						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
 						startLabel.setText(clickNowLabel.getText());
+						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
+						extractedZZZZZZZZZZZ(Integer.parseInt(clickNowLabel.getText()));
 					}
-					
+
 				}
 			}
+
 		});
+	}
+
+	private void extractedZZZZZZZZZZZ(int reactionTime) {
+		if (model.getRowCount() < controller.getRecordsMaxSize()) {
+			System.out.println("record added");
+			controller.addRecord(reactionTime);
+			model.insertRow(0, new String[] { Integer.toString(reactionTime) });
+			recordsTable.setModel(model);
+		} else {
+			System.out.println("record added");
+			model.insertRow(0, new String[] { Integer.toString(reactionTime) });
+			model.removeRow(controller.getRecordsMaxSize());
+			controller.addRecord(reactionTime);
+			recordsTable.setModel(model);
+		}
 	}
 	
 	private void setMouseActionListeners() {
@@ -272,10 +286,10 @@ public class ApplicationView {
 				randomDelayInMS = controller.getRandomDelay();
 				randomDelayTimer.start();
 				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
-				
+
 			}
 		});
-		
+
 		getReadyPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -284,16 +298,18 @@ public class ApplicationView {
 				randomDelayTimer.stop();
 			}
 		});
-		
+
 		clickPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				reactionTimeTimer.stop();
 				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
 				startLabel.setText(clickNowLabel.getText());
+				System.out.println("XD");
+				extractedZZZZZZZZZZZ(Integer.parseInt(clickNowLabel.getText()));
 			}
 		});
-		
+
 		falseStartPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -303,12 +319,17 @@ public class ApplicationView {
 			}
 		});
 	}
-	
+
 	private void setButtonActionListeners() {
 		RemoveLastRecordButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.clearLastResult();
+				if (model.getRowCount() > 0) {
+					controller.clearLastResult();
+					model.removeRow(0);
+					recordsTable.setModel(model);
+					updateCurrentAndTopRecords();
+				}
 			}
 		});
 
@@ -316,24 +337,32 @@ public class ApplicationView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				controller.clearResults();
+				model.setRowCount(0);
+				recordsTable.setModel(model);
+				updateCurrentAndTopRecords();
 			}
 		});
 
 		goToRecordsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				updateCurrentAndTopRecords();
 				cardLayout.show(pageController, CARD_NAME_RECORDS_PANEL);
 			}
+
 		});
 
 		goToAppButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				randomDelayTimer.stop();
+				timeElapsedInMS = 0;
+				startLabel.setText(LABEL_NAME_START_SCREEN);
+				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
 				cardLayout.show(pageController, CARD_NAME_APP_PANEL);
 			}
 		});
 	}
-
 
 	private void setUpMidPanelCards() {
 
@@ -341,12 +370,12 @@ public class ApplicationView {
 		appMidPanelpageController.setLayout(appMidPanelCardLayout);
 		midAppPanel.setLayout(new BorderLayout());
 		midAppPanel.add(appMidPanelpageController);
-		
+
 		appMidPanelpageController.add(startPanel, CARD_NAME_START_PANEL);
 		appMidPanelpageController.add(getReadyPanel, CARD_NAME_GET_READY_PANEL);
 		appMidPanelpageController.add(falseStartPanel, CARD_NAME_FALSE_START_PANEL);
 		appMidPanelpageController.add(clickPanel, CARD_NAME_CLICK_PANEL);
-		
+
 		appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
 	}
 
@@ -355,12 +384,12 @@ public class ApplicationView {
 		cardLayout = new CardLayout();
 		pageController.setLayout(cardLayout);
 		frame.add(pageController);
-		
+
 		pageController.add(appPanel, CARD_NAME_APP_PANEL);
 		pageController.add(recordsPanel, CARD_NAME_RECORDS_PANEL);
-		
+
 		cardLayout.show(pageController, CARD_NAME_APP_PANEL);
-		
+
 	}
 
 	private void setAppMidPanels() {
@@ -414,6 +443,99 @@ public class ApplicationView {
 		appPanel.add(botAppPanel, BorderLayout.SOUTH);
 	}
 
+	private void setRecordsScreenAndItsComponents() {
+
+		lastRecord = new JLabel();
+		averageOf3Records = new JLabel();
+		averageOf5Records = new JLabel();
+		averageOf10Records = new JLabel();
+
+		updateCurrentAndTopRecords();
+
+		recordsTable = new JTable();
+		recordsTable.setEnabled(false);
+
+		recordsTable.setForeground(Color.WHITE);
+		recordsTable.setBackground(Color.BLACK);
+		recordsTable.setFont(new Font(FONT_NAME, 1, 18));
+
+		model = (DefaultTableModel) recordsTable.getModel();
+		model.addColumn("0", controller.getAllRecords().toArray());
+		recordsTable.setModel(model);
+
+		midRecordsPanel.setLayout(new BorderLayout());
+
+		JPanel lleft = new JPanel();
+		JPanel lright = new JPanel();
+		JPanel lmid = new JPanel();
+
+		JPanel mmTop = new JPanel();
+		JPanel mmBot = new JPanel();
+
+		mmTop.setLayout(new GridLayout(0, 4, 75, 5));
+		mmTop.setBackground(Color.GREEN);
+
+		mmBot.setLayout(new BorderLayout());
+		mmBot.setBackground(Color.MAGENTA);
+
+		lmid.setLayout(new BorderLayout());
+
+		JPanel lmidleft = new JPanel();
+		JPanel lmidright = new JPanel();
+
+		lleft.setBackground(Color.BLACK);
+		lright.setBackground(Color.BLACK);
+		lleft.setPreferredSize(new Dimension(40, 0));
+		lright.setPreferredSize(new Dimension(40, 0));
+
+		lmidleft.setBackground(Color.BLUE);
+		lmidright.setBackground(Color.RED);
+
+		lmidleft.setPreferredSize(new Dimension(60, 0));
+
+		JLabel label1 = new JLabel("current");
+		JLabel label2 = new JLabel("avg 3");
+		JLabel label3 = new JLabel("avg 5");
+		JLabel label4 = new JLabel("avg 10");
+
+		mmTop.add(label1);
+		mmTop.add(label2);
+		mmTop.add(label3);
+		mmTop.add(label4);
+
+		mmTop.add(lastRecord);
+		mmTop.add(averageOf3Records);
+		mmTop.add(averageOf5Records);
+		mmTop.add(averageOf10Records);
+
+		lmidright.setLayout(new BorderLayout());
+		lmidleft.setLayout(new BorderLayout(0, 20));
+
+		mmBot.add(new JLabel(new ImageIcon("Graph.PNG")), BorderLayout.CENTER);
+
+		JLabel label65 = new JLabel("Results");
+		label65.setFont(new Font(FONT_NAME, 1, 16));
+		label65.setForeground(Color.WHITE);
+		lmidleft.add(label65, BorderLayout.NORTH);
+		lmidleft.add(recordsTable);
+		lmidright.add(mmTop, BorderLayout.NORTH);
+		lmidright.add(mmBot);
+
+		lmid.add(lmidleft, BorderLayout.WEST);
+		lmid.add(lmidright);
+
+		midRecordsPanel.add(lleft, BorderLayout.WEST);
+		midRecordsPanel.add(lright, BorderLayout.EAST);
+		midRecordsPanel.add(lmid);
+	}
+
+	private void updateCurrentAndTopRecords() {
+		lastRecord.setText(controller.getLastRecord());
+		averageOf3Records.setText(controller.getAverageOfRecordsInRange(3));
+		averageOf5Records.setText(controller.getAverageOfRecordsInRange(5));
+		averageOf10Records.setText(controller.getAverageOfRecordsInRange(10));
+	}
+
 	private void setRecordsPanelComponents() {
 
 		recordsPanel.setLayout(new BorderLayout());
@@ -427,92 +549,6 @@ public class ApplicationView {
 		topRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
 		botRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
 
-		/////////////////////////// new
-		
-		JTable tableL5 = new JTable(0,0);		
-		tableL5.setForeground(Color.CYAN);
-		tableL5.setBackground(Color.GRAY);
-		
-		DefaultTableModel model = (DefaultTableModel) tableL5.getModel();
-		model.addColumn("History",controller.getAllRecords().toArray());
-		tableL5.setModel(model);
-		
-		midRecordsPanel.setLayout(new BorderLayout());
-		
-		
-		JPanel lleft = new JPanel();
-		JPanel lright = new JPanel();
-		JPanel lmid = new JPanel();
-		
-		JPanel mmTop = new JPanel();
-		JPanel mmBot = new JPanel();
-
-		
-		mmTop.setLayout(new GridLayout(0,4,75,5));
-		mmTop.setBackground(Color.GREEN);
-		
-		mmBot.setLayout(new BorderLayout());
-		mmBot.setBackground(Color.MAGENTA);
-		
-		
-		lmid.setLayout(new BorderLayout());
-		
-		JPanel lmidleft = new JPanel();
-		JPanel lmidright = new JPanel();
-		
-		lleft.setBackground(Color.BLACK);
-		lright.setBackground(Color.BLACK);
-		lleft.setPreferredSize(new Dimension(40,0));
-		lright.setPreferredSize(new Dimension(40,0));
-		
-		
-		lmidleft.setBackground(Color.BLUE);
-		lmidright.setBackground(Color.RED);
-		lmidleft.setPreferredSize(new Dimension(200,0));
-		
-		JLabel label1 = new JLabel("current");
-		JLabel label2 = new JLabel("avg 3");
-		JLabel label3 = new JLabel("avg 5");
-		JLabel label4 = new JLabel("avg 10");
-		
-		JLabel label5 = new JLabel("100");
-		JLabel label6 = new JLabel("300");
-		JLabel label7 = new JLabel("500");
-		JLabel label8 = new JLabel("1000");
-		
-		
-		mmTop.add(label1);
-		mmTop.add(label2);
-		mmTop.add(label3);
-		mmTop.add(label4);
-		
-		mmTop.add(label5);
-		mmTop.add(label6);
-		mmTop.add(label7);
-		mmTop.add(label8);
-		
-		lmidright.setLayout(new BorderLayout());
-		
-		
-		 mmBot.add(new JLabel(new ImageIcon("Graph.PNG")),BorderLayout.CENTER);
-		
-		 
-		 lmidleft.add(tableL5);		 
-		lmidright.add(mmTop,BorderLayout.NORTH);
-		lmidright.add(mmBot);
-		
-		lmid.add(lmidleft, BorderLayout.WEST);
-		lmid.add(lmidright);
-		
-		
-		midRecordsPanel.add(lleft, BorderLayout.WEST);
-		midRecordsPanel.add(lright, BorderLayout.EAST);
-		midRecordsPanel.add(lmid);
-
-		/////////////////////////////////
-		
-		
-		
 		topRecordsPanel.add(goToAppButton);
 		botRecordsPanel.add(RemoveLastRecordButton);
 		botRecordsPanel.add(RemoveAllRecordsButton);

@@ -15,4 +15,9 @@ public interface StoredTimeRecordable  {
 	public int getCurrentRecord();
 	
 	public int getAverageInRange(int Range);
+	
+	public int getAproximateAverageInRange(int range);
+
+	public int getRecordsMaxSize();
+	
 }
