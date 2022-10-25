@@ -27,9 +27,10 @@ import ReactionTime.Controller.Controller;
 
 public class ApplicationView {
 
+	
 	private final String WINDOW_NAME = "Reaction Time Test";
 	private final Dimension WINDOW_SIZE = new Dimension(800, 600);
-	private final Dimension PANEL_BAR_SIZE = new Dimension(0, 40);
+	private final Dimension PANEL_BAR_SIZE = new Dimension(40, 40);
 
 	private final String CARD_NAME_START_PANEL = "startPanel";
 	private final String CARD_NAME_GET_READY_PANEL = "getReadyPanel";
@@ -38,9 +39,15 @@ public class ApplicationView {
 
 	private final String CARD_NAME_APP_PANEL = "appPanel";
 	private final String CARD_NAME_RECORDS_PANEL = "RecordsPanel";
-
+	
+	private final String FONT_NAME = "Arial";
+	private final int FONT_SIZE_SCREEN = 100;
+	private final int FONT_SIZE_RECORDS_TITLES = 15;
+	private final int FONT_SIZE_RECORDS_TABLE = 18;
+	
 	private final Dimension BUTTON_SIZE = new Dimension(105, 30);
 	private final Dimension BUTTON_SIZE_WIDE = new Dimension(120, 30);
+	private final int BUTTON_TEXT_SIZE = 15;
 
 	private final String BUTTON_NAME_GO_TO_APP = "Application";
 	private final String BUTTON_NAME_REMOVE_LAST = "Remove Last";
@@ -52,13 +59,15 @@ public class ApplicationView {
 	private final String LABEL_NAME_FALSE_START_SCREEN = "Too Soon";
 	private final String LABEL_NAME_CLICK_NOW_SCREEN = "Click Now";
 
-	private final String FONT_NAME = "Arial";
+	private final String LABEL_TABLE_TITLE_NAME = "History";
+	private final String LABEL_LAST_RECORD_NAME = "Last Record";
+	private final String LABEL_AVERAGE_OF_THREE_RECORDS_NAME = "Average of 3";
+	private final String LABEL_AVERAGE_OF_FIVE_RECORDS_NAME = "Average of 5";
+	private final String LABEL_AVERAGE_OF_TEN_RECORDS_NAME = "Average of 10";
+	
 	private final Color COLOR_BUTTON = new Color(50, 50, 50);
 	private final Color COLOR_BUTTON_TEXT = new Color(200, 200, 200);
-	private final Color COLOR_FONT_SCREEN = new Color(255, 255, 255, 150);
-
-	private final int BUTTON_TEXT_SIZE = 15;
-	private final int FONT_SIZE_SCREEN = 100;
+	private final Color COLOR_FONT_SCREEN_TEXT = new Color(255, 255, 255, 150);
 
 	private final Color COLOR_SCREEN_BAR = new Color(0, 0, 0);
 	private final Color COLOR_SCREEN_START = new Color(50, 180, 220);
@@ -67,6 +76,10 @@ public class ApplicationView {
 	private final Color COLOR_SCREEN_CLICK_NOW = new Color(20, 220, 0);
 	private final Color COLOR_RECORDS_BACKGROUND = new Color(50, 180, 220);
 
+
+	private final Color COLOR_FONT_RECORDS_TITLES = Color.BLACK;
+	private final Color COLOR_TOP_RESULTS_BAR = Color.GRAY;
+	
 	private Controller controller;
 	private int randomDelayInMS;
 	private int timeElapsedInMS = 0;
@@ -96,6 +109,17 @@ public class ApplicationView {
 	private JPanel falseStartPanel;
 	private JPanel clickPanel;
 
+	private JPanel leftRecordsPanel;
+	private JPanel rightRecordsPanel;
+	private JPanel midLeftRecordsPanel;
+	private JPanel resultsTopRecordsPanel;
+	private JPanel trivaMidRecordsPanel;
+	private JPanel tableRecordsPanel;
+	private JPanel midRightRecordsPanel;
+
+	private DefaultTableModel recordsTableModel;
+	private JTable recordsTable;
+
 	private JButton goToRecordsButton;
 	private JButton goToAppButton;
 	private JButton RemoveLastRecordButton;
@@ -106,15 +130,16 @@ public class ApplicationView {
 	private JLabel falseStartLabel;
 	private JLabel clickNowLabel;
 
-	JLabel lastRecord;
-	JLabel averageOf3Records;
-	JLabel averageOf5Records;
-	JLabel averageOf10Records;
+	private JLabel lastRecordValueLabel;
+	private JLabel averageOf3RecordsValueLabel;
+	private JLabel averageOf5RecordsValueLabel;
+	private JLabel averageOf10RecordsValueLabel;
 
-	DefaultTableModel model;
-	JTable recordsTable;
-
-	int a = 0;
+	private JLabel lastResultLable;
+	private JLabel averageOfThreeLabel;
+	private JLabel averageOfFiveLabel;
+	private JLabel averageOfTenLabel;
+	private JLabel recordsTableTitleLabel;
 
 	public ApplicationView(Controller controller) {
 
@@ -125,7 +150,7 @@ public class ApplicationView {
 		initializePanels();
 		initializeButtons();
 
-		initializeTimers();
+		initializeRandomDelayTimer();
 		setKeyListeners();
 		setMouseActionListeners();
 		setButtonActionListeners();
@@ -135,7 +160,9 @@ public class ApplicationView {
 
 		setAppMidPanels();
 		setAppPanelComponents();
-		setRecordsScreenAndItsComponents();
+		
+		setUpTableAndItsComponents();
+		
 		setRecordsPanelComponents();
 
 		frame.setVisible(true);
@@ -152,30 +179,42 @@ public class ApplicationView {
 	}
 
 	private void initializePanels() {
-
+		
 		pageController = new JPanel();
 		appMidPanelpageController = new JPanel();
-
+		
 		appPanel = new JPanel();
 		topAppPanel = new JPanel();
-		midAppPanel = new JPanel();
 		botAppPanel = new JPanel();
 
-		recordsPanel = new JPanel();
-		topRecordsPanel = new JPanel();
-		midRecordsPanel = new JPanel();
-		botRecordsPanel = new JPanel();
-
+		midAppPanel = new JPanel();
+		
 		startPanel = new JPanel();
 		getReadyPanel = new JPanel();
 		falseStartPanel = new JPanel();
 		clickPanel = new JPanel();
+
+		recordsPanel = new JPanel();
+		topRecordsPanel = new JPanel();
+		botRecordsPanel = new JPanel();
+		leftRecordsPanel = new JPanel();
+		rightRecordsPanel = new JPanel();
+		
+		midRecordsPanel = new JPanel();
+
+		midRightRecordsPanel = new JPanel();
+		resultsTopRecordsPanel = new JPanel();
+		trivaMidRecordsPanel = new JPanel();
+
+		midLeftRecordsPanel = new JPanel();
+		tableRecordsPanel = new JPanel();
 	}
 
 	private void initializeButtons() {
 
 		goToAppButton = createButton(BUTTON_NAME_GO_TO_APP, BUTTON_SIZE, BUTTON_TEXT_SIZE);
 		goToRecordsButton = createButton(BUTTON_NAME_GO_TO_RECORDS, BUTTON_SIZE, BUTTON_TEXT_SIZE);
+		
 		RemoveLastRecordButton = createButton(BUTTON_NAME_REMOVE_LAST, BUTTON_SIZE_WIDE, BUTTON_TEXT_SIZE);
 		RemoveAllRecordsButton = createButton(BUTTON_NAME_REMOVE_ALL, BUTTON_SIZE_WIDE, BUTTON_TEXT_SIZE);
 	}
@@ -192,12 +231,12 @@ public class ApplicationView {
 		button.setBackground(COLOR_BUTTON);
 
 		button.setForeground(COLOR_BUTTON_TEXT);
-		button.setFont(new Font(FONT_NAME, 1, textSize));
+		button.setFont(new Font(FONT_NAME, Font.BOLD , textSize));
 
 		return button;
 	}
 
-	private void initializeTimers() {
+	private void initializeRandomDelayTimer() {
 		randomDelayTimer = new Timer(100, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -255,29 +294,15 @@ public class ApplicationView {
 						reactionTimeTimer.stop();
 						startLabel.setText(clickNowLabel.getText());
 						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
-						extractedZZZZZZZZZZZ(Integer.parseInt(clickNowLabel.getText()));
+						addRecord(Integer.parseInt(clickNowLabel.getText()));
 					}
 
 				}
 			}
-
 		});
 	}
 
-	private void extractedZZZZZZZZZZZ(int reactionTime) {
-		if (model.getRowCount() < controller.getRecordsMaxSize()) {
-			System.out.println("record added");
-			controller.addRecord(reactionTime);
-			model.insertRow(0, new String[] { Integer.toString(reactionTime) });
-			recordsTable.setModel(model);
-		} else {
-			System.out.println("record added");
-			model.insertRow(0, new String[] { Integer.toString(reactionTime) });
-			model.removeRow(controller.getRecordsMaxSize());
-			controller.addRecord(reactionTime);
-			recordsTable.setModel(model);
-		}
-	}
+	
 	
 	private void setMouseActionListeners() {
 		startPanel.addMouseListener(new MouseAdapter() {
@@ -305,8 +330,7 @@ public class ApplicationView {
 				reactionTimeTimer.stop();
 				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
 				startLabel.setText(clickNowLabel.getText());
-				System.out.println("XD");
-				extractedZZZZZZZZZZZ(Integer.parseInt(clickNowLabel.getText()));
+				addRecord(Integer.parseInt(clickNowLabel.getText()));
 			}
 		});
 
@@ -319,15 +343,28 @@ public class ApplicationView {
 			}
 		});
 	}
+	
+	private void addRecord(int reactionTime) {
+		if (recordsTableModel.getRowCount() < controller.getRecordsMaxSize()) {
+			controller.addRecord(reactionTime);
+			recordsTableModel.insertRow(0, new String[] { Integer.toString(reactionTime) });
+			recordsTable.setModel(recordsTableModel);
+		} else {
+			recordsTableModel.insertRow(0, new String[] { Integer.toString(reactionTime) });
+			recordsTableModel.removeRow(controller.getRecordsMaxSize());
+			controller.addRecord(reactionTime);
+			recordsTable.setModel(recordsTableModel);
+		}
+	}
 
 	private void setButtonActionListeners() {
 		RemoveLastRecordButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (model.getRowCount() > 0) {
+				if (recordsTableModel.getRowCount() > 0) {
 					controller.clearLastResult();
-					model.removeRow(0);
-					recordsTable.setModel(model);
+					recordsTableModel.removeRow(0);
+					recordsTable.setModel(recordsTableModel);
 					updateCurrentAndTopRecords();
 				}
 			}
@@ -337,8 +374,8 @@ public class ApplicationView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				controller.clearResults();
-				model.setRowCount(0);
-				recordsTable.setModel(model);
+				recordsTableModel.setRowCount(0);
+				recordsTable.setModel(recordsTableModel);
 				updateCurrentAndTopRecords();
 			}
 		});
@@ -394,16 +431,16 @@ public class ApplicationView {
 
 	private void setAppMidPanels() {
 
-		startLabel = createLabel(LABEL_NAME_START_SCREEN);
+		startLabel = createAppPanelLabel(LABEL_NAME_START_SCREEN);
 		setPanel(startPanel, COLOR_SCREEN_START, startLabel);
 
-		getReadyLabel = createLabel(LABEL_NAME_GET_READY_SCREEN);
+		getReadyLabel = createAppPanelLabel(LABEL_NAME_GET_READY_SCREEN);
 		setPanel(getReadyPanel, COLOR_SCREEN_GET_READY, getReadyLabel);
 
-		falseStartLabel = createLabel(LABEL_NAME_FALSE_START_SCREEN);
+		falseStartLabel = createAppPanelLabel(LABEL_NAME_FALSE_START_SCREEN);
 		setPanel(falseStartPanel, COLOR_SCREEN_FALSE_START, falseStartLabel);
 
-		clickNowLabel = createLabel(LABEL_NAME_CLICK_NOW_SCREEN);
+		clickNowLabel = createAppPanelLabel(LABEL_NAME_CLICK_NOW_SCREEN);
 		setPanel(clickPanel, COLOR_SCREEN_CLICK_NOW, clickNowLabel);
 	}
 
@@ -414,10 +451,10 @@ public class ApplicationView {
 		panel.add(label);
 	}
 
-	private JLabel createLabel(String name) {
+	private JLabel createAppPanelLabel(String name) {
 
 		JLabel label = new JLabel(name);
-		label.setForeground(COLOR_FONT_SCREEN);
+		label.setForeground(COLOR_FONT_SCREEN_TEXT);
 		label.setFont(new Font(FONT_NAME, Font.BOLD, FONT_SIZE_SCREEN));
 		label.setHorizontalAlignment(JLabel.CENTER);
 
@@ -442,98 +479,39 @@ public class ApplicationView {
 		appPanel.add(midAppPanel, BorderLayout.CENTER);
 		appPanel.add(botAppPanel, BorderLayout.SOUTH);
 	}
-
-	private void setRecordsScreenAndItsComponents() {
-
-		lastRecord = new JLabel();
-		averageOf3Records = new JLabel();
-		averageOf5Records = new JLabel();
-		averageOf10Records = new JLabel();
-
-		updateCurrentAndTopRecords();
-
+	
+	private void setUpTableAndItsComponents() {
 		recordsTable = new JTable();
 		recordsTable.setEnabled(false);
+		recordsTable.setForeground(COLOR_FONT_RECORDS_TITLES);
+		recordsTable.setBackground(COLOR_TOP_RESULTS_BAR);
+		recordsTable.setFont(new Font(FONT_NAME, Font.BOLD , FONT_SIZE_RECORDS_TABLE));
+		recordsTableModel = (DefaultTableModel) recordsTable.getModel();
+		recordsTableModel.addColumn("0", controller.getAllRecords().toArray());
+		recordsTable.setModel(recordsTableModel);
+		tableRecordsPanel.setBackground(COLOR_TOP_RESULTS_BAR);
+		tableRecordsPanel.setLayout(new BorderLayout(0, 20));
+		tableRecordsPanel.setPreferredSize(new Dimension(60, 0));
+	}
 
-		recordsTable.setForeground(Color.WHITE);
-		recordsTable.setBackground(Color.BLACK);
-		recordsTable.setFont(new Font(FONT_NAME, 1, 18));
 
-		model = (DefaultTableModel) recordsTable.getModel();
-		model.addColumn("0", controller.getAllRecords().toArray());
-		recordsTable.setModel(model);
 
-		midRecordsPanel.setLayout(new BorderLayout());
 
-		JPanel lleft = new JPanel();
-		JPanel lright = new JPanel();
-		JPanel lmid = new JPanel();
+	private JLabel createRecordsPanelLabels(String name) {
+		
+		JLabel label = new JLabel(name);
+		label.setForeground(COLOR_FONT_RECORDS_TITLES);
+		label.setFont(new Font(FONT_NAME, Font.BOLD, FONT_SIZE_RECORDS_TITLES));
+		label.setHorizontalAlignment(JLabel.CENTER);
 
-		JPanel mmTop = new JPanel();
-		JPanel mmBot = new JPanel();
-
-		mmTop.setLayout(new GridLayout(0, 4, 75, 5));
-		mmTop.setBackground(Color.GREEN);
-
-		mmBot.setLayout(new BorderLayout());
-		mmBot.setBackground(Color.MAGENTA);
-
-		lmid.setLayout(new BorderLayout());
-
-		JPanel lmidleft = new JPanel();
-		JPanel lmidright = new JPanel();
-
-		lleft.setBackground(Color.BLACK);
-		lright.setBackground(Color.BLACK);
-		lleft.setPreferredSize(new Dimension(40, 0));
-		lright.setPreferredSize(new Dimension(40, 0));
-
-		lmidleft.setBackground(Color.BLUE);
-		lmidright.setBackground(Color.RED);
-
-		lmidleft.setPreferredSize(new Dimension(60, 0));
-
-		JLabel label1 = new JLabel("current");
-		JLabel label2 = new JLabel("avg 3");
-		JLabel label3 = new JLabel("avg 5");
-		JLabel label4 = new JLabel("avg 10");
-
-		mmTop.add(label1);
-		mmTop.add(label2);
-		mmTop.add(label3);
-		mmTop.add(label4);
-
-		mmTop.add(lastRecord);
-		mmTop.add(averageOf3Records);
-		mmTop.add(averageOf5Records);
-		mmTop.add(averageOf10Records);
-
-		lmidright.setLayout(new BorderLayout());
-		lmidleft.setLayout(new BorderLayout(0, 20));
-
-		mmBot.add(new JLabel(new ImageIcon("Graph.PNG")), BorderLayout.CENTER);
-
-		JLabel label65 = new JLabel("Results");
-		label65.setFont(new Font(FONT_NAME, 1, 16));
-		label65.setForeground(Color.WHITE);
-		lmidleft.add(label65, BorderLayout.NORTH);
-		lmidleft.add(recordsTable);
-		lmidright.add(mmTop, BorderLayout.NORTH);
-		lmidright.add(mmBot);
-
-		lmid.add(lmidleft, BorderLayout.WEST);
-		lmid.add(lmidright);
-
-		midRecordsPanel.add(lleft, BorderLayout.WEST);
-		midRecordsPanel.add(lright, BorderLayout.EAST);
-		midRecordsPanel.add(lmid);
+		return label;
 	}
 
 	private void updateCurrentAndTopRecords() {
-		lastRecord.setText(controller.getLastRecord());
-		averageOf3Records.setText(controller.getAverageOfRecordsInRange(3));
-		averageOf5Records.setText(controller.getAverageOfRecordsInRange(5));
-		averageOf10Records.setText(controller.getAverageOfRecordsInRange(10));
+		lastRecordValueLabel.setText(controller.getLastRecord());
+		averageOf3RecordsValueLabel.setText(controller.getAverageOfRecordsInRange(3));
+		averageOf5RecordsValueLabel.setText(controller.getAverageOfRecordsInRange(5));
+		averageOf10RecordsValueLabel.setText(controller.getAverageOfRecordsInRange(10));
 	}
 
 	private void setRecordsPanelComponents() {
@@ -542,20 +520,71 @@ public class ApplicationView {
 		topRecordsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		botRecordsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-		topRecordsPanel.setBackground(COLOR_SCREEN_BAR);
 		midRecordsPanel.setBackground(COLOR_RECORDS_BACKGROUND);
+		topRecordsPanel.setBackground(COLOR_SCREEN_BAR);
 		botRecordsPanel.setBackground(COLOR_SCREEN_BAR);
-
+		leftRecordsPanel.setBackground(COLOR_SCREEN_BAR);
+		rightRecordsPanel.setBackground(COLOR_SCREEN_BAR);
+	
 		topRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
 		botRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
+		leftRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
+		rightRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
+		
+		lastRecordValueLabel = createRecordsPanelLabels("");
+		averageOf3RecordsValueLabel = createRecordsPanelLabels("");
+		averageOf5RecordsValueLabel = createRecordsPanelLabels("");
+		averageOf10RecordsValueLabel = createRecordsPanelLabels("");
+		
+		updateCurrentAndTopRecords();
+		
+		recordsTableTitleLabel = createRecordsPanelLabels(LABEL_TABLE_TITLE_NAME);
+		averageOfThreeLabel = createRecordsPanelLabels(LABEL_AVERAGE_OF_THREE_RECORDS_NAME);
+		averageOfFiveLabel = createRecordsPanelLabels(LABEL_AVERAGE_OF_FIVE_RECORDS_NAME);
+		averageOfTenLabel = createRecordsPanelLabels(LABEL_AVERAGE_OF_TEN_RECORDS_NAME);
+		lastResultLable = createRecordsPanelLabels(LABEL_LAST_RECORD_NAME);
 
+		trivaMidRecordsPanel.setBackground(COLOR_TOP_RESULTS_BAR);
+		resultsTopRecordsPanel.setBackground(COLOR_TOP_RESULTS_BAR);
+		resultsTopRecordsPanel.setLayout(new GridLayout(0, 4, 75, 5));
+
+		midRecordsPanel.setLayout(new BorderLayout());
+		trivaMidRecordsPanel.setLayout(new BorderLayout());
+		midLeftRecordsPanel.setLayout(new BorderLayout());
+		midRightRecordsPanel.setLayout(new BorderLayout());
+		
 		topRecordsPanel.add(goToAppButton);
 		botRecordsPanel.add(RemoveLastRecordButton);
 		botRecordsPanel.add(RemoveAllRecordsButton);
 
 		recordsPanel.add(topRecordsPanel, BorderLayout.NORTH);
-		recordsPanel.add(midRecordsPanel, BorderLayout.CENTER);
 		recordsPanel.add(botRecordsPanel, BorderLayout.SOUTH);
+		recordsPanel.add(midRecordsPanel, BorderLayout.CENTER);
+		midRecordsPanel.add(leftRecordsPanel, BorderLayout.WEST);
+		midRecordsPanel.add(rightRecordsPanel, BorderLayout.EAST);
+		
+		midRecordsPanel.add(midLeftRecordsPanel);
+		
+		midRightRecordsPanel.add(resultsTopRecordsPanel, BorderLayout.NORTH);
+		midRightRecordsPanel.add(trivaMidRecordsPanel);
+		midLeftRecordsPanel.add(tableRecordsPanel, BorderLayout.WEST);
+		midLeftRecordsPanel.add(midRightRecordsPanel);
+
+		resultsTopRecordsPanel.add(lastResultLable);
+		resultsTopRecordsPanel.add(averageOfThreeLabel);
+		resultsTopRecordsPanel.add(averageOfFiveLabel);
+		resultsTopRecordsPanel.add(averageOfTenLabel);
+		
+		resultsTopRecordsPanel.add(lastRecordValueLabel);
+		resultsTopRecordsPanel.add(averageOf3RecordsValueLabel);
+		resultsTopRecordsPanel.add(averageOf5RecordsValueLabel);
+		resultsTopRecordsPanel.add(averageOf10RecordsValueLabel);
+		
+		tableRecordsPanel.add(recordsTableTitleLabel, BorderLayout.NORTH);
+		tableRecordsPanel.add(recordsTable);
+		trivaMidRecordsPanel.add(new JLabel(new ImageIcon("Graph.PNG")), BorderLayout.CENTER);
+
+		
 	}
 
 }
