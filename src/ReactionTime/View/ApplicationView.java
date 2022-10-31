@@ -27,7 +27,6 @@ import ReactionTime.Controller.Controller;
 
 public class ApplicationView {
 
-	
 	private final String WINDOW_NAME = "Reaction Time Test";
 	private final Dimension WINDOW_SIZE = new Dimension(800, 600);
 	private final Dimension PANEL_BAR_SIZE = new Dimension(40, 40);
@@ -39,12 +38,12 @@ public class ApplicationView {
 
 	private final String CARD_NAME_APP_PANEL = "appPanel";
 	private final String CARD_NAME_RECORDS_PANEL = "RecordsPanel";
-	
+
 	private final String FONT_NAME = "Arial";
 	private final int FONT_SIZE_SCREEN = 100;
 	private final int FONT_SIZE_RECORDS_TITLES = 15;
 	private final int FONT_SIZE_RECORDS_TABLE = 18;
-	
+
 	private final Dimension BUTTON_SIZE = new Dimension(105, 30);
 	private final Dimension BUTTON_SIZE_WIDE = new Dimension(120, 30);
 	private final int BUTTON_TEXT_SIZE = 15;
@@ -64,25 +63,26 @@ public class ApplicationView {
 	private final String LABEL_AVERAGE_OF_THREE_RECORDS_NAME = "Average of 3";
 	private final String LABEL_AVERAGE_OF_FIVE_RECORDS_NAME = "Average of 5";
 	private final String LABEL_AVERAGE_OF_TEN_RECORDS_NAME = "Average of 10";
-	
+
 	private final Color COLOR_BUTTON = new Color(50, 50, 50);
 	private final Color COLOR_BUTTON_TEXT = new Color(200, 200, 200);
 	private final Color COLOR_FONT_SCREEN_TEXT = new Color(255, 255, 255, 150);
 
 	private final Color COLOR_SCREEN_BAR = new Color(0, 0, 0);
+	private final Color COLOR_SCREEN_SIDE_BAR = Color.GRAY;
 	private final Color COLOR_SCREEN_START = new Color(50, 180, 220);
 	private final Color COLOR_SCREEN_GET_READY = new Color(160, 160, 160);
 	private final Color COLOR_SCREEN_FALSE_START = new Color(230, 0, 0);
 	private final Color COLOR_SCREEN_CLICK_NOW = new Color(20, 220, 0);
 	private final Color COLOR_RECORDS_BACKGROUND = new Color(50, 180, 220);
 
-
 	private final Color COLOR_FONT_RECORDS_TITLES = Color.BLACK;
 	private final Color COLOR_TOP_RESULTS_BAR = Color.GRAY;
-	
+
 	private Controller controller;
 	private int randomDelayInMS;
-	private int timeElapsedInMS = 0;
+	private int timeElapsedInMS;
+	private long initialTimeStamp;
 	private Timer randomDelayTimer;
 	private Timer reactionTimeTimer;
 
@@ -141,6 +141,8 @@ public class ApplicationView {
 	private JLabel averageOfTenLabel;
 	private JLabel recordsTableTitleLabel;
 
+	
+
 	public ApplicationView(Controller controller) {
 
 		this.controller = controller;
@@ -151,6 +153,8 @@ public class ApplicationView {
 		initializeButtons();
 
 		initializeRandomDelayTimer();
+		InitializeReactionSpeedTimer();
+
 		setKeyListeners();
 		setMouseActionListeners();
 		setButtonActionListeners();
@@ -160,9 +164,9 @@ public class ApplicationView {
 
 		setAppMidPanels();
 		setAppPanelComponents();
-		
+
 		setUpTableAndItsComponents();
-		
+
 		setRecordsPanelComponents();
 
 		frame.setVisible(true);
@@ -179,16 +183,16 @@ public class ApplicationView {
 	}
 
 	private void initializePanels() {
-		
+
 		pageController = new JPanel();
 		appMidPanelpageController = new JPanel();
-		
+
 		appPanel = new JPanel();
 		topAppPanel = new JPanel();
 		botAppPanel = new JPanel();
 
 		midAppPanel = new JPanel();
-		
+
 		startPanel = new JPanel();
 		getReadyPanel = new JPanel();
 		falseStartPanel = new JPanel();
@@ -199,7 +203,7 @@ public class ApplicationView {
 		botRecordsPanel = new JPanel();
 		leftRecordsPanel = new JPanel();
 		rightRecordsPanel = new JPanel();
-		
+
 		midRecordsPanel = new JPanel();
 
 		midRightRecordsPanel = new JPanel();
@@ -214,7 +218,7 @@ public class ApplicationView {
 
 		goToAppButton = createButton(BUTTON_NAME_GO_TO_APP, BUTTON_SIZE, BUTTON_TEXT_SIZE);
 		goToRecordsButton = createButton(BUTTON_NAME_GO_TO_RECORDS, BUTTON_SIZE, BUTTON_TEXT_SIZE);
-		
+
 		RemoveLastRecordButton = createButton(BUTTON_NAME_REMOVE_LAST, BUTTON_SIZE_WIDE, BUTTON_TEXT_SIZE);
 		RemoveAllRecordsButton = createButton(BUTTON_NAME_REMOVE_ALL, BUTTON_SIZE_WIDE, BUTTON_TEXT_SIZE);
 	}
@@ -231,7 +235,7 @@ public class ApplicationView {
 		button.setBackground(COLOR_BUTTON);
 
 		button.setForeground(COLOR_BUTTON_TEXT);
-		button.setFont(new Font(FONT_NAME, Font.BOLD , textSize));
+		button.setFont(new Font(FONT_NAME, Font.BOLD, textSize));
 
 		return button;
 	}
@@ -242,8 +246,9 @@ public class ApplicationView {
 			public void actionPerformed(ActionEvent e) {
 				timeElapsedInMS = timeElapsedInMS + 100;
 				if (timeElapsedInMS > randomDelayInMS) {
+
 					appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_CLICK_PANEL);
-					InitializeReactionSpeedTimer();
+					initialTimeStamp = System.currentTimeMillis();
 					reactionTimeTimer.start();
 					randomDelayTimer.stop();
 					timeElapsedInMS = 0;
@@ -254,10 +259,10 @@ public class ApplicationView {
 
 	private void InitializeReactionSpeedTimer() {
 
-		long initialTimeStamp = System.currentTimeMillis();
 		reactionTimeTimer = new Timer(1, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				clickNowLabel.setText(Long.toString((System.currentTimeMillis() - initialTimeStamp)));
 			}
 		});
@@ -268,33 +273,24 @@ public class ApplicationView {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-
 					if (startPanel.isShowing()) {
-						randomDelayInMS = controller.getRandomDelay();
-						randomDelayTimer.start();
-						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
+						
+						setStartPanelEvent();
 					}
 
 					else if (getReadyPanel.isShowing()) {
-						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_FALSE_START_PANEL);
-						timeElapsedInMS = 0;
-						randomDelayTimer.stop();
 						
-
+						setGetReadyPanelEvent();
 					}
 
 					else if (falseStartPanel.isShowing()) {
-						randomDelayInMS = controller.getRandomDelay();
-						randomDelayTimer.start();
-						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
-
+						
+						setFalsePanelEvent();
 					}
 
 					else if (clickPanel.isShowing()) {
-						reactionTimeTimer.stop();
-						startLabel.setText(clickNowLabel.getText());
-						appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
-						addRecord(Integer.parseInt(clickNowLabel.getText()));
+						
+						setClickPanelEvent();
 					}
 
 				}
@@ -302,57 +298,83 @@ public class ApplicationView {
 		});
 	}
 
-	
-	
 	private void setMouseActionListeners() {
 		startPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				randomDelayInMS = controller.getRandomDelay();
-				randomDelayTimer.start();
-				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
-
+				
+				setStartPanelEvent();
 			}
 		});
 
 		getReadyPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_FALSE_START_PANEL);
-				timeElapsedInMS = 0;
-				randomDelayTimer.stop();
-			}
-		});
-
-		clickPanel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				reactionTimeTimer.stop();
-				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
-				startLabel.setText(clickNowLabel.getText());
-				addRecord(Integer.parseInt(clickNowLabel.getText()));
+				
+				setGetReadyPanelEvent();
 			}
 		});
 
 		falseStartPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				randomDelayInMS = controller.getRandomDelay();
-				randomDelayTimer.start();
-				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
+				
+				setFalsePanelEvent();
+			}
+		});
+		clickPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+				setClickPanelEvent();
 			}
 		});
 	}
-	
-	private void addRecord(int reactionTime) {
+
+	private void setStartPanelEvent() {
+		randomDelayInMS = controller.getRandomDelay();
+		randomDelayTimer.start();
+		appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
+
+	}
+
+	private void setGetReadyPanelEvent() {
+		appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_FALSE_START_PANEL);
+		randomDelayTimer.stop();
+		reactionTimeTimer.stop();
+		timeElapsedInMS = 0;
+
+	}
+
+	private void setFalsePanelEvent() {
+		randomDelayInMS = controller.getRandomDelay();
+		randomDelayTimer.start();
+		appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_GET_READY_PANEL);
+
+	}
+
+	private void setClickPanelEvent() {
+		reactionTimeTimer.stop();
+		appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
+		startLabel.setText(clickNowLabel.getText());
+		addRecordToTable(clickNowLabel.getText());
+
+	}
+
+	private void addRecordToTable(String reactionTime) {
 		if (recordsTableModel.getRowCount() < controller.getRecordsMaxSize()) {
-			controller.addRecord(reactionTime);
-			recordsTableModel.insertRow(0, new String[] { Integer.toString(reactionTime) });
+			
+			controller.addRecord(Integer.parseInt(reactionTime));
+			
+			recordsTableModel.insertRow(0, new String[] { reactionTime });
 			recordsTable.setModel(recordsTableModel);
+			
 		} else {
-			recordsTableModel.insertRow(0, new String[] { Integer.toString(reactionTime) });
+			recordsTableModel.insertRow(0, new String[] { reactionTime });
 			recordsTableModel.removeRow(controller.getRecordsMaxSize());
-			controller.addRecord(reactionTime);
+			
+			controller.addRecord(Integer.parseInt(reactionTime));
+			
 			recordsTable.setModel(recordsTableModel);
 		}
 	}
@@ -383,24 +405,34 @@ public class ApplicationView {
 		goToRecordsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				resetTimers();
+				
 				updateCurrentAndTopRecords();
+				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
 				cardLayout.show(pageController, CARD_NAME_RECORDS_PANEL);
 			}
-
 		});
 
 		goToAppButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				randomDelayTimer.stop();
-				timeElapsedInMS = 0;
+
+				resetTimers();
+				
 				startLabel.setText(LABEL_NAME_START_SCREEN);
-				appMidPanelCardLayout.show(appMidPanelpageController, CARD_NAME_START_PANEL);
 				cardLayout.show(pageController, CARD_NAME_APP_PANEL);
 			}
 		});
 	}
 
+	
+	private void resetTimers() {
+		randomDelayTimer.stop();
+		reactionTimeTimer.stop();
+		timeElapsedInMS = 0;
+	}
+	
 	private void setUpMidPanelCards() {
 
 		appMidPanelCardLayout = new CardLayout();
@@ -479,13 +511,13 @@ public class ApplicationView {
 		appPanel.add(midAppPanel, BorderLayout.CENTER);
 		appPanel.add(botAppPanel, BorderLayout.SOUTH);
 	}
-	
+
 	private void setUpTableAndItsComponents() {
 		recordsTable = new JTable();
 		recordsTable.setEnabled(false);
 		recordsTable.setForeground(COLOR_FONT_RECORDS_TITLES);
 		recordsTable.setBackground(COLOR_TOP_RESULTS_BAR);
-		recordsTable.setFont(new Font(FONT_NAME, Font.BOLD , FONT_SIZE_RECORDS_TABLE));
+		recordsTable.setFont(new Font(FONT_NAME, Font.BOLD, FONT_SIZE_RECORDS_TABLE));
 		recordsTableModel = (DefaultTableModel) recordsTable.getModel();
 		recordsTableModel.addColumn("0", controller.getAllRecords().toArray());
 		recordsTable.setModel(recordsTableModel);
@@ -494,11 +526,8 @@ public class ApplicationView {
 		tableRecordsPanel.setPreferredSize(new Dimension(60, 0));
 	}
 
-
-
-
 	private JLabel createRecordsPanelLabels(String name) {
-		
+
 		JLabel label = new JLabel(name);
 		label.setForeground(COLOR_FONT_RECORDS_TITLES);
 		label.setFont(new Font(FONT_NAME, Font.BOLD, FONT_SIZE_RECORDS_TITLES));
@@ -523,21 +552,21 @@ public class ApplicationView {
 		midRecordsPanel.setBackground(COLOR_RECORDS_BACKGROUND);
 		topRecordsPanel.setBackground(COLOR_SCREEN_BAR);
 		botRecordsPanel.setBackground(COLOR_SCREEN_BAR);
-		leftRecordsPanel.setBackground(COLOR_SCREEN_BAR);
-		rightRecordsPanel.setBackground(COLOR_SCREEN_BAR);
-	
+		leftRecordsPanel.setBackground(COLOR_SCREEN_SIDE_BAR);
+		rightRecordsPanel.setBackground(COLOR_SCREEN_SIDE_BAR);
+
 		topRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
 		botRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
 		leftRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
 		rightRecordsPanel.setPreferredSize(PANEL_BAR_SIZE);
-		
+
 		lastRecordValueLabel = createRecordsPanelLabels("");
 		averageOf3RecordsValueLabel = createRecordsPanelLabels("");
 		averageOf5RecordsValueLabel = createRecordsPanelLabels("");
 		averageOf10RecordsValueLabel = createRecordsPanelLabels("");
-		
+
 		updateCurrentAndTopRecords();
-		
+
 		recordsTableTitleLabel = createRecordsPanelLabels(LABEL_TABLE_TITLE_NAME);
 		averageOfThreeLabel = createRecordsPanelLabels(LABEL_AVERAGE_OF_THREE_RECORDS_NAME);
 		averageOfFiveLabel = createRecordsPanelLabels(LABEL_AVERAGE_OF_FIVE_RECORDS_NAME);
@@ -552,7 +581,7 @@ public class ApplicationView {
 		trivaMidRecordsPanel.setLayout(new BorderLayout());
 		midLeftRecordsPanel.setLayout(new BorderLayout());
 		midRightRecordsPanel.setLayout(new BorderLayout());
-		
+
 		topRecordsPanel.add(goToAppButton);
 		botRecordsPanel.add(RemoveLastRecordButton);
 		botRecordsPanel.add(RemoveAllRecordsButton);
@@ -562,9 +591,9 @@ public class ApplicationView {
 		recordsPanel.add(midRecordsPanel, BorderLayout.CENTER);
 		midRecordsPanel.add(leftRecordsPanel, BorderLayout.WEST);
 		midRecordsPanel.add(rightRecordsPanel, BorderLayout.EAST);
-		
+
 		midRecordsPanel.add(midLeftRecordsPanel);
-		
+
 		midRightRecordsPanel.add(resultsTopRecordsPanel, BorderLayout.NORTH);
 		midRightRecordsPanel.add(trivaMidRecordsPanel);
 		midLeftRecordsPanel.add(tableRecordsPanel, BorderLayout.WEST);
@@ -574,17 +603,16 @@ public class ApplicationView {
 		resultsTopRecordsPanel.add(averageOfThreeLabel);
 		resultsTopRecordsPanel.add(averageOfFiveLabel);
 		resultsTopRecordsPanel.add(averageOfTenLabel);
-		
+
 		resultsTopRecordsPanel.add(lastRecordValueLabel);
 		resultsTopRecordsPanel.add(averageOf3RecordsValueLabel);
 		resultsTopRecordsPanel.add(averageOf5RecordsValueLabel);
 		resultsTopRecordsPanel.add(averageOf10RecordsValueLabel);
-		
+
 		tableRecordsPanel.add(recordsTableTitleLabel, BorderLayout.NORTH);
 		tableRecordsPanel.add(recordsTable);
 		trivaMidRecordsPanel.add(new JLabel(new ImageIcon("Graph.PNG")), BorderLayout.CENTER);
 
-		
 	}
 
 }

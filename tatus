@@ -1,0 +1,91 @@
+[33mcommit d59c1a4f0e44e41a702a3e316059f5525e7785fc[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Tue Oct 25 16:23:07 2022 +0200
+
+    GUI finished
+
+[33mcommit 7626b16f2b767e15c7c0d15e5224e6b239e24b73[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Tue Oct 25 01:13:49 2022 +0200
+
+    Records Panel has all of the functionality implemented
+
+[33mcommit 452c1350fd1a85539e6410ccd9c893b778b13ab9[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Mon Oct 24 17:29:36 2022 +0200
+
+    Records Sreen almost fully implemented, few methods changed
+
+[33mcommit bd8c921c02b7eca96f91736a620d61a8e4a3d436[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Fri Oct 21 10:29:33 2022 +0200
+
+    deleted unused methods, renamed few var/method names
+
+[33mcommit 6eb8ad1afef898e64218d97e90ab9accb927186e[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Fri Oct 21 09:38:38 2022 +0200
+
+    Connected View with the controller
+    Cleaned up the code
+    Spacebar now can be used to measure reaction time
+
+[33mcommit eaced47f201b333ce55340c3ce9b9bf9ee0bfb3e[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Fri Oct 21 04:17:37 2022 +0200
+
+    forgot to save the project before pusing, hope it works
+
+[33mcommit 54656a502967ed8ca5ee010311093000f212c881[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Fri Oct 21 04:09:04 2022 +0200
+
+    cards layout added to switch between panels
+    software logic finished (some methods left unused)
+    view almost finished (need to store records in a Jtable)
+
+[33mcommit dff8d3c51544933ed579fbe410e12072ba54087f[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Thu Oct 20 00:59:46 2022 +0200
+
+    Creating a view class
+    making it work with model components through a controller
+
+[33mcommit 610eb3b351b267c2bf80a77b64b4da812dc07ffb[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Tue Oct 18 04:14:24 2022 +0200
+
+    Added View class
+
+[33mcommit 2fe65c9ad3f486bf1c2b07a8b09c41875d22c18d[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Tue Oct 18 03:30:47 2022 +0200
+
+    Restructured Program's files so it fits MVC pattern better
+     Cleaned up code Changed some varNames Prepared main class to be ready
+     For graphical component of the program
+
+[33mcommit a6a60d7784829bbaec06af6e9bb0c3eef9e7bc65[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Tue Oct 18 00:17:20 2022 +0200
+
+      I created an interface for ReactionTimeRecorder to clean it up, it's ready to be used by other classes.
+     I also changed classses names to avoid confusion (ReactionTimeRecords/able  -> StoredTimeRecords/able for classes interfaces and their java files respectively)
+
+[33mcommit 634830a878bf539400880ac1743a0d6166a02357[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Mon Oct 17 23:10:22 2022 +0200
+
+    Changed class names
+
+[33mcommit 177be975e01b5a3248943af75b287b6462ce2107[m
+Author: l6b7 <114299607+l6b7@users.noreply.github.com>
+Date:   Mon Oct 17 22:55:39 2022 +0200
+
+    Create README.md
+
+[33mcommit 022afac07cf8a20925608a2f11e90a1d8e99a52b[m
+Author: Jakub Zabek <l6b7@mail.com>
+Date:   Mon Oct 17 22:51:44 2022 +0200
+
+    first commit

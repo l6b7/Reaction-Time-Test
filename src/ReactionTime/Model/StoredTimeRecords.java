@@ -88,7 +88,8 @@ public class StoredTimeRecords implements StoredTimeRecordable {
 	}
 	
 	@Override
-	// will return lesser possible average if not enough records found (records.size > 0)
+	// if records aren't empty will return lesser possible average if not enough records found 
+	// (for example average in range of 3 if only 2 records found would return average of 2) 
 	public int getAproximateAverageInRange(int range) {
 
 		int averageInRange = 0;
