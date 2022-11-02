@@ -8,6 +8,8 @@ Additionally, it stores 20 results locally and shows various averages of past re
 
 Screenshots : https://i.imgur.com/HFmry8z.png
 
+Installation : https://github.com/l6b7/Reaction-Time-Test/releases/tag/v1.0
+
 ## Motivation
 
 I wanted to put into practise what I've learnt over the past few weeks, mostly referring to design patterns or good coding practises.
