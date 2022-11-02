@@ -143,6 +143,7 @@ public class ApplicationView {
 
 	
 
+	
 	public ApplicationView(Controller controller) {
 
 		this.controller = controller;
